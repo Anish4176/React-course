@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <!-- Don't use this in production: -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+      function ChatInput({Collection,setCollection}){
+        const [message, setMessage] = React.useState("");
+    
+
+        const handleChange = (event) => {
+          // console.log(event.target.value);
+          setMessage(event.target.value);
+        };
+        function handleSubmit(){
+           setCollection([
+            ...Collection,{
+              msg:message,
+              sender:'user',
+              id: crypto.randomUUID()
+            }
+           ])
+           setMessage("");
+        }
+        return (
+            <>
+              <input type="text" placeholder="Type your message here..." 
+                onChange={handleChange}
+                value={message}
+              />
+              <button onClick={handleSubmit}>Send</button>
+            </>
+        )
+      }
+      function ChatMessage({ msg, sender }) {
+        return (
+          <div style={{ display: 'flex', margin: '10px 0', padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }}>
+            {sender === "robot" && <img src="robot.png" alt="Robot" width="50px" />}
+            <p>{msg}</p>
+            {sender === "user" && <img src="user.png" alt="User" width="50px" />}
+          </div>
+        )
+      }
+      function Chats({Collection}) {
+        
+        return (
+            <>
+             {Collection.map((MessageElement)=>(
+                    <ChatMessage
+                     msg={MessageElement.msg} 
+                     sender={MessageElement.sender}
+                     key={MessageElement.id}
+                    />
+              ))}
+            </>
+        )
+      }
+    
+      function MyApp() {
+        const [Collection,setCollection]=React.useState([]);
+        return (
+            <div style={{ width: '400px', margin: '0 auto', padding: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>
+                <h2>Chatbot</h2>
+                <ChatInput 
+                 Collection={Collection}
+                 setCollection={setCollection}
+                />
+                <Chats
+                 Collection={Collection}
+                />
+                
+                
+            </div>
+        )
+      }
+
+      const container = document.getElementById('root');
+      const root = ReactDOM.createRoot(container);
+      root.render(<MyApp />);
+
+    </script>
+</body>
+</html>
