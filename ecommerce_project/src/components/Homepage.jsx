@@ -1,8 +1,17 @@
-// import { useState } from "react"
 import Header from "./shared/Header";
 import "./Homepage.css";
-import { products } from "../data/products";
+import { useEffect, useState } from "react";
 const Homepage = () => {
+  const [products, setproducts] = useState([]);
+  useEffect(()=>{
+    fetch('http://localhost:3000/api/products')
+    .then((response)=>{
+       response.json().then((data)=>{
+         setproducts(data);
+       })
+    })
+  },[])
+  console.log('hey',products);
   return (
     <>
       <Header />
