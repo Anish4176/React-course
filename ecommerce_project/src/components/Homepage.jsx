@@ -1,6 +1,7 @@
 import Header from "./shared/Header";
 import "./Homepage.css";
 import { useEffect, useState } from "react";
+import { centsToDollar } from "../utils/money";
 const Homepage = ({cart}) => {
   const [products, setproducts] = useState([]);
   
@@ -38,7 +39,7 @@ const Homepage = ({cart}) => {
                 </div>
 
                 <div className="product-price">
-                  ${(priceCents / 100).toFixed(2)}
+                  {centsToDollar(priceCents)}
                 </div>
 
                 <div className="product-quantity-container">

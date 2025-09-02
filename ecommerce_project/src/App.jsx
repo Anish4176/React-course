@@ -9,7 +9,7 @@ import { useState } from 'react'
 function App() {
   const [cart, setcart] = useState([]);
   useEffect(() => {
-    fetch('/api/cart-items')
+    fetch('/api/cart-items?expand=product')
     .then((response)=>{
         response.json().then((data)=>{
           setcart(data);
