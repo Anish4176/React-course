@@ -5,13 +5,13 @@ const Homepage = () => {
   const [products, setproducts] = useState([]);
   const [cart, setcart] = useState([]);
   useEffect(()=>{
-    fetch('http://localhost:3000/api/products')
+    fetch('/api/products')
     .then((response)=>{
        response.json().then((data)=>{
          setproducts(data);
        })
     })
-    fetch('http://localhost:3000/api/cart-items')
+    fetch('/api/cart-items')
     .then((response)=>{
         response.json().then((data)=>{
           setcart(data);
