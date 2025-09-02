@@ -1,21 +1,15 @@
 import Header from "./shared/Header";
 import "./Homepage.css";
 import { useEffect, useState } from "react";
-const Homepage = () => {
+const Homepage = ({cart}) => {
   const [products, setproducts] = useState([]);
-  const [cart, setcart] = useState([]);
+  
   useEffect(()=>{
     fetch('/api/products')
     .then((response)=>{
        response.json().then((data)=>{
          setproducts(data);
        })
-    })
-    fetch('/api/cart-items')
-    .then((response)=>{
-        response.json().then((data)=>{
-          setcart(data);
-        })
     })
   },[])
   return (
