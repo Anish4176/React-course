@@ -3,6 +3,7 @@ import "./Homepage.css";
 import { useEffect, useState } from "react";
 const Homepage = () => {
   const [products, setproducts] = useState([]);
+  const [cart, setcart] = useState([]);
   useEffect(()=>{
     fetch('http://localhost:3000/api/products')
     .then((response)=>{
@@ -10,11 +11,16 @@ const Homepage = () => {
          setproducts(data);
        })
     })
+    fetch('http://localhost:3000/api/cart-items')
+    .then((response)=>{
+        response.json().then((data)=>{
+          setcart(data);
+        })
+    })
   },[])
-  console.log('hey',products);
   return (
     <>
-      <Header />
+      <Header cart={cart} />
       <div className="home-page">
         <div className="products-grid">
           {products.map((product) => {
