@@ -8,11 +8,12 @@ import dayjs from "dayjs";
 const Orders = ({ cart }) => {
   const [orders, setorders] = useState([]);
   useEffect(() => {
-    fetch("/api/orders?expand=products").then((response) => {
-      response.json().then((data) => {
-        setorders(data);
-      });
-    });
+    async function getOrders() {
+      let response = await fetch("/api/orders?expand=products");
+      let data = await response.json();
+      setorders(data);
+    }
+    getOrders();
   }, []);
 
   return (

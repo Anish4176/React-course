@@ -9,12 +9,12 @@ import { useState } from 'react'
 function App() {
   const [cart, setcart] = useState([]);
   useEffect(() => {
-    fetch('/api/cart-items?expand=product')
-    .then((response)=>{
-        response.json().then((data)=>{
-          setcart(data);
-        })
-    })
+    async function fecthData(){
+     let response=await fetch('/api/cart-items?expand=product');
+     let data=await response.json();
+     setcart(data);
+    }
+    fecthData();
   }, [])
   
 

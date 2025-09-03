@@ -6,12 +6,12 @@ const Homepage = ({cart}) => {
   const [products, setproducts] = useState([]);
   
   useEffect(()=>{
-    fetch('/api/products')
-    .then((response)=>{
-       response.json().then((data)=>{
-         setproducts(data);
-       })
-    })
+    async function fetchProducts(){
+     let response=await fetch('/api/products');
+     let data=await response.json();
+     setproducts(data);
+    }
+   fetchProducts();
   },[])
   return (
     <>
