@@ -8,20 +8,20 @@ import { useEffect } from 'react'
 import { useState } from 'react'
 function App() {
   const [cart, setcart] = useState([]);
-  useEffect(() => {
-    async function fecthData(){
+  async function loadCart(){
      let response=await fetch('/api/cart-items?expand=product');
      let data=await response.json();
      setcart(data);
-    }
-    fecthData();
+    }    
+  useEffect(() => {
+      loadCart();
   }, [])
   
 
   return (
     <>
     <Routes>
-      <Route index element={<Homepage cart={cart}/>} ></Route>
+      <Route index element={<Homepage cart={cart} loadCart={loadCart} />} ></Route>
       <Route path='checkout' element={<Checkout cart={cart} />} ></Route>
       <Route path='orders' element={<Orders cart={cart}/>} ></Route>
       <Route path='tracking' element={<Tracking/>} ></Route>
