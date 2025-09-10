@@ -17,6 +17,7 @@ const DeliveryOptions = ({deliveryOptions,cartItem,loadCart}) => {
             <input
               type="radio"
               checked={deliveryItem.id == cartItem.deliveryOptionId}
+              onChange={()=>{}}
               className="delivery-option-input"
               name={`delivery-option-${cartItem.productId}`}
             />

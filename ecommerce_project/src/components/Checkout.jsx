@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import "./checkout-header.css";
 import "./Checkout.css";
 import { centsToDollar } from "../utils/money";
@@ -6,22 +6,30 @@ import { useEffect, useState } from "react";
 import "dayjs";
 import dayjs from "dayjs";
 import DeliveryOptions from "./DeliveryOptions";
-const Checkout = ({ cart ,loadCart}) => {
+import axios from "axios";
+const Checkout = ({ cart, loadCart }) => {
   const [deliveryOptions, setdeliveryOptions] = useState([]);
   const [paymentSummary, setpaymentSummary] = useState(null);
+  const navigate=useNavigate();
   useEffect(() => {
-    async function delivery(){
-     let response=await fetch('/api/delivery-options?expand=estimatedDeliveryTime');
-     let data=await response.json();
-     setdeliveryOptions(data);
+    async function delivery() {
+      let response = await fetch(
+        "/api/delivery-options?expand=estimatedDeliveryTime"
+      );
+      let data = await response.json();
+      setdeliveryOptions(data);
 
-     let response1=await fetch('/api/payment-summary');
-     let data1=await response1.json();
-     setpaymentSummary(data1);
+      let response1 = await fetch("/api/payment-summary");
+      let data1 = await response1.json();
+      setpaymentSummary(data1);
     }
     delivery();
   }, [cart]);
-
+  const handleOrder=async()=>{
+    await axios.post('/api/orders');
+    await loadCart();
+    navigate('/orders');
+  }
   return (
     <>
       <title>Checkout</title>
@@ -53,11 +61,15 @@ const Checkout = ({ cart ,loadCart}) => {
 
         <div className="checkout-grid">
           <div className="order-summary">
-            {cart.length > 0 &&
+            {cart.length > 0 && deliveryOptions.length > 0  &&
               cart.map((cartItem) => {
                 const deliveryDate = deliveryOptions.find((deliveryOption) => {
                   return deliveryOption.id == cartItem.deliveryOptionId;
                 });
+                const handleDelete = async (id) => {
+                   await axios.delete(`/api/cart-items/${id}`);
+                   await loadCart();
+                };
                 return (
                   <div key={cartItem.productId} className="cart-item-container">
                     <div className="delivery-date">
@@ -90,13 +102,19 @@ const Checkout = ({ cart ,loadCart}) => {
                           <span className="update-quantity-link link-primary">
                             Update
                           </span>
-                          <span className="delete-quantity-link link-primary">
+                          <span
+                            className="delete-quantity-link link-primary"
+                            onClick={() => handleDelete(cartItem.productId)}
+                          >
                             Delete
                           </span>
                         </div>
                       </div>
-                    <DeliveryOptions deliveryOptions={deliveryOptions} cartItem={cartItem} loadCart={loadCart} />
-                     
+                      <DeliveryOptions
+                        deliveryOptions={deliveryOptions}
+                        cartItem={cartItem}
+                        loadCart={loadCart}
+                      />
                     </div>
                   </div>
                 );
@@ -117,7 +135,7 @@ const Checkout = ({ cart ,loadCart}) => {
                 <div className="payment-summary-row">
                   <div>Shipping &amp; handling:</div>
                   <div className="payment-summary-money">
-                     {centsToDollar(paymentSummary.shippingCostCents)}
+                    {centsToDollar(paymentSummary.shippingCostCents)}
                   </div>
                 </div>
 
@@ -131,7 +149,7 @@ const Checkout = ({ cart ,loadCart}) => {
                 <div className="payment-summary-row">
                   <div>Estimated tax (10%):</div>
                   <div className="payment-summary-money">
-                     {centsToDollar(paymentSummary.taxCents)}
+                    {centsToDollar(paymentSummary.taxCents)}
                   </div>
                 </div>
 
@@ -142,7 +160,9 @@ const Checkout = ({ cart ,loadCart}) => {
                   </div>
                 </div>
 
-                <button className="place-order-button button-primary">
+                <button className="place-order-button button-primary"
+                 onClick={handleOrder}
+                >
                   Place your order
                 </button>
               </>
