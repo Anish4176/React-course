@@ -5,7 +5,8 @@ import { centsToDollar } from "../utils/money";
 import { useEffect, useState } from "react";
 import "dayjs";
 import dayjs from "dayjs";
-const Checkout = ({ cart }) => {
+import DeliveryOptions from "./DeliveryOptions";
+const Checkout = ({ cart ,loadCart}) => {
   const [deliveryOptions, setdeliveryOptions] = useState([]);
   const [paymentSummary, setpaymentSummary] = useState(null);
   useEffect(() => {
@@ -19,7 +20,7 @@ const Checkout = ({ cart }) => {
      setpaymentSummary(data1);
     }
     delivery();
-  }, []);
+  }, [cart]);
 
   return (
     <>
@@ -52,7 +53,7 @@ const Checkout = ({ cart }) => {
 
         <div className="checkout-grid">
           <div className="order-summary">
-            {deliveryOptions.length > 0 &&
+            {cart.length > 0 &&
               cart.map((cartItem) => {
                 const deliveryDate = deliveryOptions.find((deliveryOption) => {
                   return deliveryOption.id == cartItem.deliveryOptionId;
@@ -94,43 +95,8 @@ const Checkout = ({ cart }) => {
                           </span>
                         </div>
                       </div>
-
-                      <div className="delivery-options">
-                        <div className="delivery-options-title">
-                          Choose a delivery option:
-                        </div>
-                        {deliveryOptions.map((deliveryItem) => {
-                          return (
-                            <div
-                              key={deliveryItem.id}
-                              className="delivery-option"
-                            >
-                              <input
-                                type="radio"
-                                checked={
-                                  deliveryItem.id == cartItem.deliveryOptionId
-                                }
-                                className="delivery-option-input"
-                                name={`delivery-option-${cartItem.productId}`}
-                              />
-                              <div>
-                                <div className="delivery-option-date">
-                                  {dayjs(
-                                    deliveryItem.estimatedDeliveryTimeMs
-                                  ).format("dddd, MMMM D")}
-                                </div>
-                                <div className="delivery-option-price">
-                                  {deliveryItem.priceCents > 0
-                                    ? `${centsToDollar(
-                                        deliveryItem.priceCents
-                                      )}- Shipping`
-                                    : "FREE Shipping"}
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
+                    <DeliveryOptions deliveryOptions={deliveryOptions} cartItem={cartItem} loadCart={loadCart} />
+                     
                     </div>
                   </div>
                 );
